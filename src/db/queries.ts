@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { db } from "./index";
 import { categories, products } from "./schema";
 
@@ -27,6 +27,23 @@ export function getProductsByCategory(categoryId: string) {
   return db.query.products.findMany({
     where: and(eq(products.active, true), eq(products.categoryId, categoryId)),
     orderBy: [desc(products.createdAt)],
+    with: { category: true },
+  });
+}
+
+/** A single active product by its unique slug, with its category joined, or undefined. */
+export function getProductBySlug(slug: string) {
+  return db.query.products.findFirst({
+    where: and(eq(products.slug, slug), eq(products.active, true)),
+    with: { category: true },
+  });
+}
+
+/** Active products for a set of ids (used to resolve the cart), with categories joined. */
+export function getProductsByIds(ids: string[]) {
+  if (ids.length === 0) return Promise.resolve([]);
+  return db.query.products.findMany({
+    where: and(eq(products.active, true), inArray(products.id, ids)),
     with: { category: true },
   });
 }

@@ -9,11 +9,13 @@
 // opts pages that render this header into per-request rendering.
 import { getCurrentSession } from "@/lib/session";
 import { SignOutButton } from "@/components/sign-out-button";
+import { cartCount } from "@/lib/cart";
 
 export async function SiteHeader() {
   const data = await getCurrentSession();
   const user = data?.user ?? null;
   const isAdmin = user?.role === "admin";
+  const count = await cartCount();
 
   return (
     <>
@@ -39,7 +41,7 @@ export async function SiteHeader() {
             ) : (
               <a className="nav-link" href="/sign-in">Sign in</a>
             )}
-            <a className="nav-link" href="#">Bag (0)</a>
+            <a className="nav-link" href="/cart">Bag ({count})</a>
           </div>
         </div>
         <hr className="hairline" />
