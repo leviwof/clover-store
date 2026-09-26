@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   Clover Store — global design system
+   Reference: modern luxury fashion e-commerce (Gucci-inspired *principles*
+   only — no Gucci fonts, imagery, colours, or copy are reproduced). Tailwind
+   v4 CSS-first config: tokens in @theme generate utilities
+   (bg-ink, text-muted, font-display, tracking-label, py-section …).
+   ========================================================================= */
+
+@theme {
+  /* Typefaces — wired to next/font variables set in layout.tsx */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-playfair), ui-serif, Georgia, "Times New Roman", serif;
+
+  /* Fluid type scale — clamp(min, preferred, max) for responsive headings */
+  --text-overline: 0.72rem;
+  --text-overline--line-height: 1.1;
+  --text-caption: 0.82rem;
+  --text-body: 1rem;
+  --text-lead: 1.125rem;
+  --text-h3: clamp(1.25rem, 1.4vw + 0.95rem, 1.75rem);
+  --text-h2: clamp(1.75rem, 3vw + 0.8rem, 3rem);
+  --text-h1: clamp(2.25rem, 4vw + 1rem, 4rem);
+  --text-display: clamp(2.75rem, 7vw, 6rem);
+
+  /* Letter-spacing — wide tracked capitals are the luxury signature */
+  --tracking-display: -0.015em;
+  --tracking-label: 0.16em;
+  --tracking-overline: 0.28em;
+
+  /* Colour — warm, restrained, near-monochrome */
+  --color-paper: #f7f4ef;
+  --color-surface: #ffffff;
+  --color-ink: #1a1815;
+  --color-muted: #6c665d;
+  --color-faint: #8b857b;
+  --color-line: #e3ddd2;
+  --color-accent: #8a6d3b;
+  --color-inverse: #171512;
+  --color-inverse-ink: #f2ede4;
+  /* Corners — luxury reads sharp; square by default */
+  --radius-none: 0px;
+
+  /* Spacing — page gutter + section rhythm (adds p-gutter, py-section …) */
+  --spacing-gutter: 1.25rem;
+  --spacing-section: 5rem;
+  --spacing-section-lg: 8rem;
+
+  /* Editorial max width + motion */
+  --container-luxe: 90rem;
+  --ease-luxe: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur: 300ms;
+}
+
+/* ---------- Base: element defaults ---------- */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.65;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: var(--tracking-display);
+    text-wrap: balance;
+  }
+  h1 { font-size: var(--text-h1); }
+  h2 { font-size: var(--text-h2); }
+  h3 { font-size: var(--text-h3); letter-spacing: 0; }
+  a { color: inherit; text-decoration: none; }
+  img, picture, video { display: block; max-width: 100%; height: auto; }
+  ::selection { background: var(--color-ink); color: var(--color-paper); }
+  :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+}
+/* ---------- Components: reusable primitives ---------- */
+@layer components {
+  /* Container — centred, responsive gutters, editorial max width */
+  .container-luxe {
+    width: 100%;
+    max-width: var(--container-luxe);
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+  }
+  @media (min-width: 768px)  { .container-luxe { padding-inline: 2.5rem; } }
+  @media (min-width: 1280px) { .container-luxe { padding-inline: 4rem; } }
+
+  /* Section vertical rhythm */
+  .section    { padding-block: var(--spacing-section); }
+  .section-lg { padding-block: var(--spacing-section-lg); }
+
+  /* Overline / eyebrow label */
+  .overline {
+    font-size: var(--text-overline);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-overline);
+    color: var(--color-muted);
+    font-weight: 500;
+  }
+
+  /* Lead paragraph + constrained measure */
+  .lead { font-size: var(--text-lead); color: var(--color-muted); max-width: 60ch; }
+  .copy { max-width: 62ch; }
+
+  /* Hero display heading */
+  .display {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    line-height: 1.02;
+    letter-spacing: var(--tracking-display);
+    font-weight: 500;
+    text-wrap: balance;
+  }
+
+  /* Buttons — sharp, uppercase, tracked, generous padding */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.95rem 2.25rem;
+    font-size: 0.78rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: var(--tracking-label); line-height: 1;
+    border: 1px solid transparent; border-radius: var(--radius-none);
+    cursor: pointer;
+    transition: background-color var(--dur) var(--ease-luxe), color var(--dur) var(--ease-luxe), border-color var(--dur) var(--ease-luxe);
+  }
+  .btn-solid   { background: var(--color-ink); color: var(--color-paper); border-color: var(--color-ink); }
+  .btn-solid:hover   { background: transparent; color: var(--color-ink); }
+  .btn-outline { background: transparent; color: var(--color-ink); border-color: var(--color-ink); }
+  .btn-outline:hover { background: var(--color-ink); color: var(--color-paper); }
+  .btn-light   { background: var(--color-inverse-ink); color: var(--color-inverse); border-color: var(--color-inverse-ink); }
+  .btn-light:hover   { background: transparent; color: var(--color-inverse-ink); }
+  .btn-ghost   { background: transparent; color: var(--color-ink); padding-inline: 0; }
+
+  /* Link — hairline underline that reveals on hover */
+  .link { position: relative; padding-bottom: 2px; }
+  .link::after {
+    content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
+    background: currentColor; transform: scaleX(0); transform-origin: right;
+    transition: transform var(--dur) var(--ease-luxe);
+  }
+  .link:hover::after { transform: scaleX(1); transform-origin: left; }
+
+  /* Nav link — uppercase, tracked */
+  .nav-link {
+    font-size: 0.8rem; text-transform: uppercase; letter-spacing: var(--tracking-label);
+    transition: color var(--dur) var(--ease-luxe);
+  }
+  .nav-link:hover { color: var(--color-muted); }
+
+  /* Hairline divider */
+  .hairline { border: 0; border-top: 1px solid var(--color-line); }
+
+  /* Responsive product grid — 2 / 3 / 4 up */
+  .product-grid {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--spacing-gutter); row-gap: 3rem;
+  }
+  @media (min-width: 768px)  { .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 1280px) { .product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 2rem; } }
+  /* Product card — imagery-led, minimal chrome */
+  .product-card { display: flex; flex-direction: column; }
+  .product-media {
+    position: relative; aspect-ratio: 3 / 4; overflow: hidden;
+    background: var(--color-surface); border: 1px solid var(--color-line);
+  }
+  .product-media > * { height: 100%; width: 100%; transition: transform 600ms var(--ease-luxe); }
+  .product-card:hover .product-media > * { transform: scale(1.04); }
+  .product-title { margin-top: 1rem; font-size: 0.95rem; font-weight: 500; }
+  .product-price { margin-top: 0.25rem; color: var(--color-muted); font-size: 0.9rem; }
+
+  /* Inverted (dark) section + its on-dark overrides */
+  .surface-inverse { background: var(--color-inverse); color: var(--color-inverse-ink); }
+  .surface-inverse .overline { color: color-mix(in oklab, var(--color-inverse-ink) 65%, transparent); }
+  .surface-inverse .lead { color: color-mix(in oklab, var(--color-inverse-ink) 78%, transparent); }
+  .surface-inverse .btn-outline { color: var(--color-inverse-ink); border-color: var(--color-inverse-ink); }
+  .surface-inverse .btn-outline:hover { background: var(--color-inverse-ink); color: var(--color-inverse); }
+}
+
+/* ---------- Components: homepage primitives ---------- */
+@layer components {
+  /* Slim announcement bar above the header */
+  .announcement {
+    background: var(--color-inverse);
+    color: var(--color-inverse-ink);
+    text-align: center;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-overline);
+    padding-block: 0.6rem;
+  }
+
+  /* Bottom-weighted gradient scrim so light text stays legible over imagery */
+  .scrim {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(
+      to top,
+      rgba(20, 18, 16, 0.62) 0%,
+      rgba(20, 18, 16, 0.18) 42%,
+      transparent 72%
+    );
+  }
+
+  /* Editorial / collection tile — image fills, gently zooms on hover */
+  .tile { position: relative; display: block; overflow: hidden; background: var(--color-surface); }
+  .tile img { transition: transform 700ms var(--ease-luxe); }
+  .tile:hover img { transform: scale(1.05); }
+  .tile-body {
+    position: absolute; inset-inline: 0; bottom: 0;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem;
+    padding: 1.75rem;
+  }
+
+  /* On-dark text context WITHOUT a background (for text laid over imagery) */
+  .on-dark { color: var(--color-inverse-ink); }
+  .on-dark .overline { color: color-mix(in oklab, var(--color-inverse-ink) 72%, transparent); }
+  .on-dark .btn-outline { color: var(--color-inverse-ink); border-color: var(--color-inverse-ink); }
+  .on-dark .btn-outline:hover { background: var(--color-inverse-ink); color: var(--color-inverse); }
+
+  /* Minimal underline input (newsletter) */
+  .field {
+    width: 100%; background: transparent; color: inherit;
+    border: 0; border-bottom: 1px solid color-mix(in oklab, currentColor 45%, transparent);
+    padding: 0.6rem 0; font-size: 0.9rem; border-radius: var(--radius-none);
+    transition: border-color var(--dur) var(--ease-luxe);
+  }
+  .field::placeholder { color: color-mix(in oklab, currentColor 55%, transparent); }
+  .field:focus { outline: none; border-bottom-color: currentColor; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
