@@ -37,6 +37,7 @@
   --color-faint: #8b857b;
   --color-line: #e3ddd2;
   --color-accent: #8a6d3b;
+  --color-danger: #9a3324;
   --color-inverse: #171512;
   --color-inverse-ink: #f2ede4;
   /* Corners — luxury reads sharp; square by default */
@@ -234,6 +235,62 @@
   }
   .field::placeholder { color: color-mix(in oklab, currentColor 55%, transparent); }
   .field:focus { outline: none; border-bottom-color: currentColor; }
+
+  /* Bordered input — dense auth/admin forms. Square corners, hairline border,
+     accent focus ring; sits on the surface colour so it reads on paper. */
+  .field-box {
+    width: 100%; background: var(--color-surface); color: inherit;
+    border: 1px solid var(--color-line); border-radius: var(--radius-none);
+    padding: 0.75rem 0.9rem; font-size: 0.9rem;
+    transition: border-color var(--dur) var(--ease-luxe);
+  }
+  .field-box::placeholder { color: var(--color-faint); }
+  .field-box:focus { outline: none; border-color: var(--color-accent); }
+  .field-box:disabled { opacity: 0.55; cursor: not-allowed; }
+  /* Invalid state (driven by aria-invalid) — danger border, kept on focus */
+  .field-box[aria-invalid="true"],
+  .field-box[aria-invalid="true"]:focus { border-color: var(--color-danger); }
+
+  /* Positioning context for a trailing affix (password Show/Hide) */
+  .field-control { position: relative; }
+  .field-box.has-affix { padding-right: 4rem; }
+  .field-affix {
+    position: absolute; inset-block: 0; right: 0;
+    display: inline-flex; align-items: center;
+    padding-inline: 0.9rem;
+    font-size: var(--text-overline); text-transform: uppercase;
+    letter-spacing: var(--tracking-label); color: var(--color-muted);
+    background: transparent; border: 0; cursor: pointer;
+    transition: color var(--dur) var(--ease-luxe);
+  }
+  .field-affix:hover { color: var(--color-ink); }
+  .field-affix:disabled { cursor: not-allowed; opacity: 0.5; }
+
+  /* Per-field validation message, sits directly under its input */
+  .field-error { font-size: var(--text-caption); color: var(--color-danger); }
+
+  /* Inline form error — restrained, left-ruled in the danger tone */
+  .auth-error {
+    font-size: var(--text-caption);
+    color: var(--color-danger);
+    border-left: 2px solid var(--color-danger);
+    padding-left: 0.75rem;
+  }
+
+  /* Disabled buttons — dim, non-interactive, and hold their resting look
+     (no hover colour swap that would read as active while pending) */
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-solid:disabled:hover   { background: var(--color-ink); color: var(--color-paper); }
+  .btn-outline:disabled:hover { background: transparent; color: var(--color-ink); }
+
+  /* Loading spinner — 1em ring that inherits the button's text colour */
+  .spinner {
+    display: inline-block; width: 0.85em; height: 0.85em;
+    border: 2px solid currentColor; border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 }
 
 /* ---------- Reduced motion ---------- */

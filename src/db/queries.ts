@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "./index";
 import { categories, products } from "./schema";
 
@@ -19,6 +19,22 @@ export function getLatestProducts(limit = 8) {
     orderBy: [desc(products.createdAt)],
     limit,
     with: { category: true },
+  });
+}
+
+/** Active products in a single category, newest first, with the category joined. */
+export function getProductsByCategory(categoryId: string) {
+  return db.query.products.findMany({
+    where: and(eq(products.active, true), eq(products.categoryId, categoryId)),
+    orderBy: [desc(products.createdAt)],
+    with: { category: true },
+  });
+}
+
+/** A single category by its unique slug, or undefined if none matches. */
+export function getCategoryBySlug(slug: string) {
+  return db.query.categories.findFirst({
+    where: eq(categories.slug, slug),
   });
 }
 

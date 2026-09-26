@@ -10,6 +10,10 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
+  // Authorization role. "customer" (default) or "admin". Declared as a
+  // server-only Better Auth additional field (input: false) so it can never be
+  // set through the public sign-up API — the first admin is promoted by hand.
+  role: text("role").notNull().default("customer"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

@@ -8,6 +8,8 @@ import {
 } from "@/db/queries";
 import { SAMPLE_CATEGORIES, SAMPLE_PRODUCTS } from "@/db/sample-catalog";
 import { formatPrice } from "@/lib/format";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 // The storefront reads live from the DB. Keep `/` cached and regenerate at most
 // every 5 minutes rather than rendering fully dynamic on each request.
@@ -47,25 +49,7 @@ export default async function Home() {
 
   return (
     <>
-      <div className="announcement">Complimentary shipping &amp; returns on every order</div>
-
-      {/* Header — thin, uppercase, hairline-separated, sticky */}
-      <header className="sticky top-0 z-50 bg-paper/90 backdrop-blur">
-        <div className="container-luxe flex items-center justify-between py-5">
-          <nav className="hidden gap-8 md:flex">
-            <a className="nav-link" href="#collections">Collections</a>
-            <a className="nav-link" href="#new">New In</a>
-            <a className="nav-link" href="#categories">Shop</a>
-          </nav>
-          <a href="/" className="font-display text-xl uppercase tracking-[0.35em]">Clover</a>
-          <div className="hidden gap-8 md:flex">
-            <a className="nav-link" href="#">Search</a>
-            <a className="nav-link" href="#">Account</a>
-            <a className="nav-link" href="#">Bag (0)</a>
-          </div>
-        </div>
-        <hr className="hairline" />
-      </header>
+      <SiteHeader />
 
       <main>
         {/* Hero — full-bleed editorial image with overlaid display type */}
@@ -121,7 +105,7 @@ export default async function Home() {
               <p className="overline">New in</p>
               <h2>The Latest Arrivals</h2>
             </div>
-            <a href="#" className="link nav-link hidden sm:inline-block">View all</a>
+            <a href="/arrivals" className="link nav-link hidden sm:inline-block">View all</a>
           </div>
           <div className="product-grid">
             {products.map((p) => (
@@ -184,35 +168,7 @@ export default async function Home() {
         </section>
       </main>
 
-      {/* Footer — hairline rule, tracked labels, four responsive columns */}
-      <footer className="container-luxe section">
-        <hr className="hairline mb-10" />
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="flex flex-col gap-3">
-            <p className="overline">Client Care</p>
-            <a href="#" className="link text-caption">Contact us</a>
-            <a href="#" className="link text-caption">Shipping &amp; returns</a>
-            <a href="#" className="link text-caption">Order tracking</a>
-          </div>
-          <div className="flex flex-col gap-3">
-            <p className="overline">The Company</p>
-            <a href="#" className="link text-caption">About Clover</a>
-            <a href="#" className="link text-caption">Sustainability</a>
-            <a href="#" className="link text-caption">Careers</a>
-          </div>
-          <div className="flex flex-col gap-3">
-            <p className="overline">Legal</p>
-            <a href="#" className="link text-caption">Privacy policy</a>
-            <a href="#" className="link text-caption">Terms of service</a>
-          </div>
-          <div className="flex flex-col gap-3">
-            <p className="overline">Follow</p>
-            <a href="#" className="link text-caption">Instagram</a>
-            <a href="#" className="link text-caption">Pinterest</a>
-          </div>
-        </div>
-        <p className="text-caption text-muted mt-12">© 2026 Clover Store. Sample data and imagery for demonstration; all content original.</p>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

@@ -22,13 +22,27 @@ export const SAMPLE_CATEGORIES: Category[] = [
   { id: "sample-jewellery", name: "Jewellery", slug: "jewellery", description: "Quiet gold, worn every day.", imageUrl: img("photo-1515562141207-7a88fb7ce338"), featured: false, sortOrder: 6, createdAt: t, updatedAt: t },
 ];
 
-export const SAMPLE_PRODUCTS: ProductWithCategory[] = [
-  { id: "sample-coat", name: "Double-Breasted Wool Coat", slug: "double-breasted-wool-coat", description: "A structured wool coat with a clean double-breasted front.", priceCents: 245000, currency: "USD", imageUrl: img("photo-1539109136881-3be0616acf4b", 800), stock: 12, featured: true, active: true, categoryId: null, createdAt: t, updatedAt: t, category: null },
-  { id: "sample-scarf", name: "Silk Twill Scarf", slug: "silk-twill-scarf", description: "Hand-rolled silk twill, printed in a muted archive motif.", priceCents: 39000, currency: "USD", imageUrl: img("photo-1521572163474-6864f9cf17ab", 800), stock: 45, featured: false, active: true, categoryId: null, createdAt: t, updatedAt: t, category: null },
-  { id: "sample-tote", name: "Structured Leather Tote", slug: "structured-leather-tote", description: "A full-grain leather tote that holds its shape.", priceCents: 189000, currency: "USD", imageUrl: img("photo-1584917865442-de89df76afd3", 800), stock: 8, featured: true, active: true, categoryId: null, createdAt: t, updatedAt: t, category: null },
-  { id: "sample-knit", name: "Cashmere Crew Knit", slug: "cashmere-crew-knit", description: "Pure cashmere in a relaxed crew-neck.", priceCents: 78000, currency: "USD", imageUrl: img("photo-1523381210434-271e8be1f52b", 800), stock: 20, featured: false, active: true, categoryId: null, createdAt: t, updatedAt: t, category: null },
-  { id: "sample-trouser", name: "Tailored Wool Trouser", slug: "tailored-wool-trouser", description: "A straight-leg trouser cut from Italian wool.", priceCents: 62000, currency: "USD", imageUrl: img("photo-1441984904996-e0b6ba687e04", 800), stock: 15, featured: false, active: true, categoryId: null, createdAt: t, updatedAt: t, category: null },
-  { id: "sample-loafer", name: "Suede Loafer", slug: "suede-loafer", description: "Hand-stitched suede loafer with a leather sole.", priceCents: 74000, currency: "USD", imageUrl: img("photo-1549298916-b41d501d3772", 800), stock: 6, featured: false, active: true, categoryId: null, createdAt: t, updatedAt: t, category: null },
-  { id: "sample-shirt", name: "Cotton Poplin Shirt", slug: "cotton-poplin-shirt", description: "Crisp cotton poplin with a clean point collar.", priceCents: 46000, currency: "USD", imageUrl: img("photo-1483985988355-763728e1935b", 800), stock: 30, featured: false, active: true, categoryId: null, createdAt: t, updatedAt: t, category: null },
-  { id: "sample-bag", name: "Quilted Shoulder Bag", slug: "quilted-shoulder-bag", description: "A quilted leather shoulder bag on a slim chain.", priceCents: 165000, currency: "USD", imageUrl: img("photo-1560243563-062bfc001d68", 800), stock: 0, featured: true, active: true, categoryId: null, createdAt: t, updatedAt: t, category: null },
+// 8 products keyed to a category slug — mirrors the seed (see seed.ts) so the
+// fallback associates products to categories exactly as a freshly seeded DB
+// would. The category object is attached from SAMPLE_CATEGORIES below so the
+// collection pages can filter by category without a live DB.
+const SAMPLE_PRODUCT_SEED: Array<
+  Omit<ProductWithCategory, "categoryId" | "category"> & { categorySlug: string }
+> = [
+  { id: "sample-coat", name: "Double-Breasted Wool Coat", slug: "double-breasted-wool-coat", description: "A structured wool coat with a clean double-breasted front.", priceCents: 245000, currency: "USD", imageUrl: img("photo-1539109136881-3be0616acf4b", 800), stock: 12, featured: true, active: true, createdAt: t, updatedAt: t, categorySlug: "ready-to-wear" },
+  { id: "sample-scarf", name: "Silk Twill Scarf", slug: "silk-twill-scarf", description: "Hand-rolled silk twill, printed in a muted archive motif.", priceCents: 39000, currency: "USD", imageUrl: img("photo-1521572163474-6864f9cf17ab", 800), stock: 45, featured: false, active: true, createdAt: t, updatedAt: t, categorySlug: "accessories" },
+  { id: "sample-tote", name: "Structured Leather Tote", slug: "structured-leather-tote", description: "A full-grain leather tote that holds its shape.", priceCents: 189000, currency: "USD", imageUrl: img("photo-1584917865442-de89df76afd3", 800), stock: 8, featured: true, active: true, createdAt: t, updatedAt: t, categorySlug: "handbags" },
+  { id: "sample-knit", name: "Cashmere Crew Knit", slug: "cashmere-crew-knit", description: "Pure cashmere in a relaxed crew-neck.", priceCents: 78000, currency: "USD", imageUrl: img("photo-1523381210434-271e8be1f52b", 800), stock: 20, featured: false, active: true, createdAt: t, updatedAt: t, categorySlug: "ready-to-wear" },
+  { id: "sample-trouser", name: "Tailored Wool Trouser", slug: "tailored-wool-trouser", description: "A straight-leg trouser cut from Italian wool.", priceCents: 62000, currency: "USD", imageUrl: img("photo-1441984904996-e0b6ba687e04", 800), stock: 15, featured: false, active: true, createdAt: t, updatedAt: t, categorySlug: "men" },
+  { id: "sample-loafer", name: "Suede Loafer", slug: "suede-loafer", description: "Hand-stitched suede loafer with a leather sole.", priceCents: 74000, currency: "USD", imageUrl: img("photo-1549298916-b41d501d3772", 800), stock: 6, featured: false, active: true, createdAt: t, updatedAt: t, categorySlug: "shoes" },
+  { id: "sample-shirt", name: "Cotton Poplin Shirt", slug: "cotton-poplin-shirt", description: "Crisp cotton poplin with a clean point collar.", priceCents: 46000, currency: "USD", imageUrl: img("photo-1483985988355-763728e1935b", 800), stock: 30, featured: false, active: true, createdAt: t, updatedAt: t, categorySlug: "men" },
+  { id: "sample-bag", name: "Quilted Shoulder Bag", slug: "quilted-shoulder-bag", description: "A quilted leather shoulder bag on a slim chain.", priceCents: 165000, currency: "USD", imageUrl: img("photo-1560243563-062bfc001d68", 800), stock: 0, featured: true, active: true, createdAt: t, updatedAt: t, categorySlug: "handbags" },
 ];
+
+export const SAMPLE_PRODUCTS: ProductWithCategory[] = SAMPLE_PRODUCT_SEED.map(
+  ({ categorySlug, ...p }) => {
+    const category =
+      SAMPLE_CATEGORIES.find((c) => c.slug === categorySlug) ?? null;
+    return { ...p, categoryId: category?.id ?? null, category };
+  },
+);
