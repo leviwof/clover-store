@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { resolveCart } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
+import { createCheckoutSession } from "@/lib/checkout-actions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CartLineItem } from "@/components/cart-line-item";
+import { CheckoutButton } from "./checkout-button";
 
 export const metadata: Metadata = {
   title: "Your Bag — Clover Store",
@@ -12,7 +14,12 @@ export const metadata: Metadata = {
 // Reads the cart cookie, so this route renders dynamically. resolveCart() is the
 // authoritative pricing + stock guard: quantities and the subtotal shown here can
 // never exceed live stock, even if the cookie was tampered with.
-export default async function CartPage() {
+export default async function CartPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ adjusted?: string; error?: string }>;
+}) {
+  const { adjusted, error } = await searchParams;
   const cart = await resolveCart();
   const empty = cart.lines.length === 0;
 
@@ -27,6 +34,18 @@ export default async function CartPage() {
               <p className="overline">Your bag</p>
               <h1>Shopping bag</h1>
             </div>
+
+            {(adjusted || error) && (
+              <div role="status" className="auth-error flex flex-col gap-1">
+                {adjusted && (
+                  <p>
+                    We updated your bag to match current availability. Please review it and
+                    check out again.
+                  </p>
+                )}
+                {error && <p>Something went wrong starting checkout. Please try again.</p>}
+              </div>
+            )}
 
             {empty ? (
               <div className="flex flex-col items-start gap-5">
@@ -76,9 +95,9 @@ export default async function CartPage() {
                   <p className="text-caption text-muted">
                     Taxes and shipping calculated at checkout.
                   </p>
-                  <button type="button" className="btn btn-solid" disabled>
-                    Checkout — coming soon
-                  </button>
+                  <form action={createCheckoutSession}>
+                    <CheckoutButton />
+                  </form>
                 </div>
               </div>
             )}

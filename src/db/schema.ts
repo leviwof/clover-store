@@ -104,3 +104,67 @@ export const productsRelations = relations(products, ({ one }) => ({
     references: [categories.id],
   }),
 }));
+
+// ---------------------------------------------------------------------------
+// Orders (checkout phase). An order is created "pending" when a Stripe Checkout
+// Session is opened, then flipped to "paid" exactly once by the payment webhook
+// (with the /checkout/success page as an idempotent fallback). Money is integer
+// cents; every line snapshots the name + unit price at purchase time so a past
+// order never shifts if a product's price/name changes or the product is later
+// removed. `status` mirrors the `role` column's plain-text style (no pg enum).
+//   status: pending | paid | fulfilled | cancelled | failed | needs_attention
+// ---------------------------------------------------------------------------
+
+export const orders = pgTable("orders", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  // Nullable + set-null so deleting a user preserves the financial record.
+  userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+  status: text("status").notNull().default("pending"),
+  currency: text("currency").notNull().default("USD"),
+  subtotalCents: integer("subtotal_cents").notNull(),
+  // What Stripe charged. Equals subtotal in v1 (no tax/shipping lines yet).
+  amountTotalCents: integer("amount_total_cents").notNull(),
+  email: text("email"),
+  stripeSessionId: text("stripe_session_id").unique(),
+  stripePaymentIntentId: text("stripe_payment_intent_id").unique(),
+  // Flipped false->true atomically the one time stock is decremented, so the
+  // decrement runs exactly once across concurrent webhook + success-page calls.
+  stockAdjusted: boolean("stock_adjusted").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const orderItems = pgTable("order_items", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  orderId: uuid("order_id")
+    .notNull()
+    .references(() => orders.id, { onDelete: "cascade" }),
+  // Keep the line if the product is later deleted — the snapshot stands alone.
+  productId: uuid("product_id").references(() => products.id, {
+    onDelete: "set null",
+  }),
+  productName: text("product_name").notNull(),
+  productSlug: text("product_slug"),
+  unitPriceCents: integer("unit_price_cents").notNull(),
+  quantity: integer("quantity").notNull(),
+  lineCents: integer("line_cents").notNull(),
+  currency: text("currency").notNull().default("USD"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// One order has many line items; each line belongs to one order (and optionally
+// points back at the product it was bought from).
+export const ordersRelations = relations(orders, ({ many }) => ({
+  items: many(orderItems),
+}));
+
+export const orderItemsRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+  product: one(products, {
+    fields: [orderItems.productId],
+    references: [products.id],
+  }),
+}));

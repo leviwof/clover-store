@@ -6,7 +6,10 @@ import { SignOutButton } from "@/components/sign-out-button";
 // Section navigation for the /account area. Client component so it can mark the
 // active route with usePathname. Sentence-case (distinct from the uppercase
 // storefront nav) with a left-rule active indicator.
-const ITEMS = [{ href: "/account", label: "Account details" }] as const;
+const ITEMS = [
+  { href: "/account", label: "Account details" },
+  { href: "/account/orders", label: "Order history" },
+] as const;
 
 export function AccountNav() {
   const pathname = usePathname();
@@ -34,16 +37,6 @@ export function AccountNav() {
             </li>
           );
         })}
-
-        {/* Order history ships later — shown as a forthcoming section, not linked. */}
-        <li>
-          <span className="flex items-center gap-2 border-l-2 border-transparent py-2 pl-4 text-faint">
-            Order history
-            <span className="border border-line px-1.5 py-0.5 text-overline uppercase tracking-label text-faint">
-              Soon
-            </span>
-          </span>
-        </li>
       </ul>
 
       <hr className="hairline" />
